@@ -1,0 +1,24 @@
+<div class="login-container">
+	<form action="./" method="POST">
+		<input type="hidden" name="intent" value="register" />
+		<div class="login-div">
+			<p>{{ REGISTER_NOTICE }}</p>
+		</div>
+		<div class="login-div">
+			<label class="label" for="uname">Username</label>
+			<input class="login-input" id="uname" type="text" name="uname" required />
+		</div>
+		<div class="login-div">
+			<label class="label" for="pwd">Password</label>
+			<input class="login-input" id="pwd" type="password" autocomplete="off" name="pwd" required />
+		</div>
+		<div class="login-div">
+			<label class="label" for="pwd2">Password (Again)</label>
+			<input class="login-input" id="pwd2" type="password" autocomplete="off" name="pwd2" required />
+		</div>
+		<div class="login-div">
+			<input class="login-button" type="submit" value="Sign Up" />
+		</div>
+	</form>
+	<p>Have an account? <a href="./?">Log in!</a></p>
+</div>

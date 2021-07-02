@@ -1,0 +1,17 @@
+<div class="todo-item" id="todo-item-{{ RESTORE_ITEM_TIMESTAMP }}">
+	<details>
+		<summary>{{ RESTORE_ITEM_TITLE }}</summary>
+		
+		<form action="./" method="POST">
+			<input type="hidden" name="restore" value="{{ RESTORE_ITEM_TIMESTAMP }}" />
+			<input type="submit" value="Restore" />
+		</form>
+		
+		<div style="display:inline-block;width:1em;"></div>
+		
+		<form action="./" method="POST">
+			<input type="hidden" name="delete-restore" value="{{ RESTORE_ITEM_TIMESTAMP }}" />
+			<input type="submit" value="Delete" />
+		</form>
+	</details>
+</div>

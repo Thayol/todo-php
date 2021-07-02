@@ -1,0 +1,20 @@
+<div class="login-container">
+	<form action="./" method="POST">
+		<input type="hidden" name="intent" value="login" />
+		<div class="login-div">
+			<p>{{ LOGIN_NOTICE }}</p>
+		</div>
+		<div class="login-div">
+			<label class="label" for="uname">Username</label>
+			<input class="login-input" id="uname" type="text" name="uname" required />
+		</div>
+		<div class="login-div">
+			<label class="label" for="pwd">Password</label>
+			<input class="login-input" id="pwd" type="password" autocomplete="off" name="pwd" required />
+		</div>
+		<div class="login-div">
+			<input class="login-button" type="submit" value="Log in" />
+		</div>
+	</form>
+	<p>Don't have an account? <a href="./?reg">Sign up!</a></p>
+</div>

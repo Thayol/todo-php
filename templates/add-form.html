@@ -1,0 +1,37 @@
+<div class="todo-add-container">
+	<details>
+		<summary>New</summary>
+		<form action="./" method="POST" autocomplete="off">
+			<input type="hidden" name="action" value="add" />
+			<div class="todo-add-div">
+				<p>{{ ADD_NOTICE }}</p>
+			</div>
+			
+			<div class="todo-add-div">
+				<label class="label" for="todo_title">Title</label>
+				<input id="todo_title" type="text" list="todo_titles" name="todo_title" required />
+			</div>
+			
+			<div class="todo-add-div">
+				<label class="label" for="todo_description">Description</label>
+				<input id="todo_description" type="text" name="todo_description" />
+			</div>
+			
+			<div class="todo-add-div">
+				<label class="label" for="todo_deadline">Deadline</label>
+				<input id="todo_deadline" type="date" name="todo_deadline" /><!--time-local-->
+				<i>(optional)</i>
+			</div>
+			
+			<div class="todo-add-div">
+				<label class="label" for="todo_category">Category</label>
+				<input id="todo_category" type="text" list="todo_categories" name="todo_category" />
+				<i>(optional)</i>
+			</div>
+			
+			<div class="todo-add-div">
+				<input class="todo-add-button" type="submit" value="Add" />
+			</div>
+		</form>
+	</details>
+</div>

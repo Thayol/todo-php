@@ -1,0 +1,20 @@
+# Windows thumbnails
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Volatile files
+backups/*
+profiles/*
+
+# Files that are not appropriate for git
+created.txt
+description.txt
+title.txt
+anti_doxx.json
+
+# Sensitive information
+api_key.php
+local_secret.php
+account.php

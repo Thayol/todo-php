@@ -1,0 +1,153 @@
+html {
+	font-family: 'Roboto', sans-serif;
+	background-color: #111111;
+	color: #ffffff;
+	text-align: center;
+}
+
+a:link, a:hover, a:visited, a:active {
+	color: DeepPink;
+	text-decoration: none;
+}
+
+body {
+	max-width: 800px;
+	margin: 30px auto;
+	text-align: left;
+}
+.header {
+	text-align: center;
+}
+
+.login-container form {
+	width: inherit;
+	margin: inherit;
+}
+
+.todo-category {
+	margin: 5px;
+	padding: 10px;
+	border: 1px dashed #222222;
+}
+
+.todo-category .todo-item {
+	margin-left: 10px;
+}
+
+h3 {
+	margin: 0;
+	padding: 0;
+}
+.todo-item form, .navbar-form {
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+}
+.todo-item form input, .navbar-form input {
+	border: 2px solid #333333;
+	padding: 5px;
+	margin: 0;
+	background-color: transparent;
+	color: white;
+	border-radius: 4px;
+}
+.todo-item form input:focus, .navbar-form input:focus {
+	outline: none;
+}
+.todo-item form input:active, .navbar-form input:active {
+	background-color: #222222;
+}
+
+summary, details[open] {
+	padding: 0.5em;
+	margin: 0;
+}
+
+summary {
+	border: 1px solid transparent;
+}
+
+details[open] summary {
+	margin: -0.5em;
+	margin-bottom: 0.7em;
+	border: none;
+}
+
+details[open] {
+	border: 1px solid #222222;
+	border-radius: 0 0 10px 10px;
+	overflow: hidden;
+}
+
+summary:focus {
+	outline: none;
+	background-color: #333333;
+}
+
+.todo-add-div, .todo-add-container {
+	margin: 20px;
+}
+
+.todo-add-div input[type="text"],
+.todo-add-div input[type="datetime-local"],
+.todo-add-div input[type="date"]
+{
+	width: 30em;
+}
+
+.todo-add-div label {
+	display: inline-block;
+	width: 6em;
+	text-align: right;
+	margin-right: 5px;
+}
+
+.todo-add-button {
+	border: none;
+	background-color: Green;
+	color: White;
+	padding: 5px;
+	border-radius: 3px;
+	width: 100%;
+}
+.todo-add-button:active {
+	background-color: Lime;
+	color: DimGrey;
+}
+.navbar {
+	text-align: right;
+}
+
+
+
+
+/* LOGIN */
+.login-input {
+	width: 100%;
+	border: 1px solid LightPink;
+	background-color: transparent;
+	padding: 5px;
+	border-radius: 3px;
+	color: white;
+}
+.login-button {
+	border: none;
+	background-color: DeepPink;
+	padding: 5px;
+	border-radius: 3px;
+	width: 100%;
+}
+.login-button:active {
+	background-color: MediumVioletRed;
+}
+.login-div {
+	margin: 20px;
+}
+.login-container {
+	width: fit-content;
+	margin: auto;
+}
+
+.login-container p {
+	text-align: center;
+}
