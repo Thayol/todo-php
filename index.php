@@ -1,12 +1,15 @@
 <?php
 session_start();
 
+
 // error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+
 // libs
 require "template_engine.php";
+
 
 // globals
 $session_username_key = "todo-username";
@@ -24,10 +27,13 @@ if (!file_exists("backups"))
 {
 	mkdir("backups");
 }
+
+
 if (!file_exists("profiles"))
 {
 	mkdir("profiles");
 }
+
 
 // post
 if (!empty($_POST["intent"]))
@@ -94,6 +100,7 @@ if (!empty($_POST["intent"]))
 	}
 }
 
+
 if (isset($_POST["logout"]) || isset($_GET["logout"]))
 {
 	unset($_SESSION[$session_username_key]);
@@ -101,6 +108,7 @@ if (isset($_POST["logout"]) || isset($_GET["logout"]))
 	redirect("./");
 	exit(0);
 }
+
 
 // session
 if (isset($_GET[$get_register_key]))
@@ -349,6 +357,7 @@ else
 	echo todo_list($model);
 }
 
+
 // renderers
 function todo_list(array $model = []) : string
 {
@@ -512,6 +521,7 @@ function todo_list(array $model = []) : string
 	exit(0);
 }
 
+
 function restore_form(array $backups = array()) : string
 {
 	$te = new template_engine();
@@ -531,6 +541,7 @@ function restore_form(array $backups = array()) : string
 	exit(0);
 }
 
+
 function login_form(string $notice = "") : string
 {
 	$te = new template_engine();
@@ -540,6 +551,7 @@ function login_form(string $notice = "") : string
 	return $te->get_html();
 	exit(0);
 }
+
 
 function register_form(string $notice = "") : string
 {
@@ -551,85 +563,9 @@ function register_form(string $notice = "") : string
 	exit(0);
 }
 
+
 function redirect($path)
 {
 	header('Location: ' . $path);
 	exit(0); // TERMINATE!
 }
-
-// function reference($model)
-// {
-	// $te = new template_engine();
-	// $te->get_block_names();
-	// $te->set_block("TITLE", $model->get_title());
-	// $te->set_block("PREVIEW_WIDTH", $model->get_preview_width());
-	// $te->set_block("PREVIEW_HEIGHT", $model->get_preview_height());
-	// $te->set_block("PREVIEW_WIDTH_BORDER", $model->get_preview_width() + site_data::$border_size*2);
-	// $te->set_block("PREVIEW_HEIGHT_BORDER", $model->get_preview_height() + site_data::$border_size*2);
-	
-	// foreach ($model->get_border_colors() as $info)
-	// {
-		// $te->append_argumented_block("EXTRA_STYLES", "BORDER_COLOR_STYLE", [ 
-			// "BORDER_CLASS" => $info["id"],
-			// "BORDER_COLOR" => $info["color"]
-		// ]);
-	// }
-	
-	// if ($model->get_mode() == "image" || $model->get_mode() == "collection_image")
-	// {
-		// $te->set_block_template("PREVIEW_MAIN_CLASS", "PREVIEW_SINGLE_CLASS");
-	// }
-	
-	// if ($model->has_previews())
-	// {
-		// $te->append_block_template("CONTENT", "PREVIEW_CONTAINER");
-		// foreach ($model->get_contents() as $preview)
-		// {
-			// if (!isset($preview["class"])) $preview["class"] = ""; // should not be here
-			// $te->append_argumented_block("PREVIEWS", "PREVIEW", [ 
-				// "PREVIEW_LINK" => $preview["link"],
-				// "PREVIEW_CLASS" => $preview["class"],
-				// "PREVIEW_IMAGE" => $preview["image"]
-			// ]);
-		// }
-	// }
-	// else
-	// {
-		// $te->append_block_template("CONTENT", "ITEM_CONTAINER");
-		// foreach ($model->get_contents() as $item_id => $item)
-		// {
-			// if (isset($item["text"])) $text = $item["text"];
-			// else if (isset($item["id"])) $text = $item["id"];
-			// else $text = $item_id;
-			
-			// $te->append_argumented_block("ITEMS", "ITEM", [ 
-				// "ITEM_LINK" => $item["link"],
-				// "ITEM_TEXT" => $text
-			// ]);
-		// }
-	// }
-	
-	// $link_categories = $model->get_navbar_links();
-	// ksort($link_categories); // sort
-	// foreach ($link_categories as $key => $link_category)
-	// {
-		// foreach ($link_category as $key2 => $link)
-		// {
-			// if ($link["id"] == null) $link["id"] = $key . "-" . $key2;
-			
-			// if ($key == "hidden") $class = "hidden";
-			// else $class = "";
-			
-			// $te->append_argumented_block("NAVBAR_ITEMS", "NAVBAR_LINK", [ 
-				// "NAVBAR_LINK_TEXT" => $link["text"],
-				// "NAVBAR_LINK_LINK" => $link["link"],
-				// "NAVBAR_LINK_CLASS" => $class,
-				// "NAVBAR_LINK_ID" => $link["id"]
-			// ]);
-		// }
-		// if ($key != array_key_last($link_categories))
-			// $te->append_block_template("NAVBAR_ITEMS", "NAVBAR_SPACER");
-	// }
-	
-	// echo $te->get_html();
-// }
