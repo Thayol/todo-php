@@ -254,8 +254,14 @@ else if (!empty($_POST["action"]))
 {
 	$action = $_POST["action"];
 	$modified = false;
-	if ($action === "add")
+	if ($action === "add" || $action == "edit")
 	{
+		if (!empty($_POST["todo_item_id"]))
+		{
+			$id_to_edit = $_POST["todo_item_id"];
+		}
+		
+		
 		if (!empty($_POST["todo_title"]))
 		{
 			$title = $_POST["todo_title"];
@@ -285,7 +291,7 @@ else if (!empty($_POST["action"]))
 				$model["list"] = array();
 			}
 			
-			$model["list"][] = array(
+			$new_item = array(
 				"title" => $title,
 				"description" => $description,
 				"deadline" => $deadline,
@@ -293,6 +299,15 @@ else if (!empty($_POST["action"]))
 				"created" => $now,
 				"modified" => $now,
 			);
+			
+			if (!empty($id_to_edit) && !empty($model["list"][$id_to_edit]))
+			{
+				$model["list"][$id_to_edit] = $new_item;
+			}
+			else
+			{
+				$model["list"][] = $new_item;
+			}
 			
 			$modified = true;
 		}
@@ -369,7 +384,7 @@ function todo_list(array $model = []) : string
 	
 	$te = new template_engine();
 	$te->set_block("TITLE", $model["username"] . "'s to-do List");
-	$te->append_block_template("CONTENT", "TODO_LIST");
+	$te->append_block_template("CONTENT", "MAIN_LIST");
 	$te->append_block_template("CONTENT", "ADD_FORM");
 	$te->append_block_template("CONTENT", "NAVBAR");
 	
@@ -455,7 +470,7 @@ function todo_list(array $model = []) : string
 	
 	if (!empty($categories))
 	{
-		$te->set_block("TODO_ITEMS", "");
+		$te->set_block("MAIN_ITEMS", "");
 	}
 	$te->set_block("DATALIST_AUTOFILLS", "");
 	
@@ -466,7 +481,7 @@ function todo_list(array $model = []) : string
 	{
 		$category_name = $category["title"];
 		$category_basis = $category["basis"];
-		$te->set_block("TODO_CATEGORY_ITEMS", "");
+		$te->set_block("MAIN_CATEGORY_ITEMS", "");
 		
 		if ($category_basis == "custom")
 		{
@@ -481,23 +496,23 @@ function todo_list(array $model = []) : string
 			
 			if (empty($item["description"]))
 			{
-				$te->set_block_template("TODO_ITEM_SUMMARY", "TODO_ITEM_SUMMARY_NODESC");
+				$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_NODESC");
 			}
 			else
 			{
-				$te->set_block_template("TODO_ITEM_SUMMARY", "TODO_ITEM_SUMMARY_DESC");
+				$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_DESC");
 			}
 			
-			$te->append_argumented_block("TODO_CATEGORY_ITEMS", "TODO_ITEM", [ 
-				"TODO_ITEM_ID" => $key,
-				"TODO_ITEM_TITLE" => $item["title"],
-				"TODO_ITEM_DESCRIPTION" => $item["description"],
+			$te->append_argumented_block("MAIN_CATEGORY_ITEMS", "MAIN_ITEM", [ 
+				"MAIN_ITEM_ID" => $key,
+				"MAIN_ITEM_TITLE" => $item["title"],
+				"MAIN_ITEM_DESCRIPTION" => $item["description"],
 			]);
 		}
 		
-		$te->append_argumented_block("TODO_ITEMS", "TODO_CATEGORY", [
-			"TODO_CATEGORY_ID" => $category_key,
-			"TODO_CATEGORY_TITLE" => $category_name,
+		$te->append_argumented_block("MAIN_ITEMS", "MAIN_CATEGORY", [
+			"MAIN_CATEGORY_ID" => $category_key,
+			"MAIN_CATEGORY_TITLE" => $category_name,
 		]);
 	}
 	$te->append_argumented_block("DATALISTS", "DATALIST", [
@@ -515,8 +530,8 @@ function todo_list(array $model = []) : string
 		"DATALIST_ID" => "todo_titles",
 	]);
 	
-	// $te->append_block("TODO_ITEMS", "<pre><details open><summary>dump</summary>".print_r($model, true)."</details></pre>");
-	// $te->append_block("TODO_ITEMS", "<pre><details open><summary>dump</summary>".print_r($categories, true)."</details></pre>");
+	// $te->append_block("MAIN_ITEMS", "<pre><details open><summary>dump</summary>".print_r($model, true)."</details></pre>");
+	// $te->append_block("MAIN_ITEMS", "<pre><details open><summary>dump</summary>".print_r($categories, true)."</details></pre>");
 	return $te->get_html();
 	exit(0);
 }

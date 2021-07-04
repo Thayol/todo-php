@@ -1,18 +1,18 @@
-<div class="todo-item" id="todo-item-{{ TODO_ITEM_ID }}">
+<div class="todo-item" id="todo-item-{{ MAIN_ITEM_ID }}">
 	<details>
-		<summary>{{ TODO_ITEM_SUMMARY }}</summary>
+		<summary>{{ MAIN_ITEM_SUMMARY }}</summary>
 		
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="delay" />
 			<input type="hidden" name="delay_by" value="-1 week" />
-			<input type="hidden" name="todo_item_id" value="{{ TODO_ITEM_ID }}" />
+			<input type="hidden" name="todo_item_id" value="{{ MAIN_ITEM_ID }}" />
 			<input type="submit" value="-1 week" />
 		</form>
 		
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="delay" />
 			<input type="hidden" name="delay_by" value="-1 day" />
-			<input type="hidden" name="todo_item_id" value="{{ TODO_ITEM_ID }}" />
+			<input type="hidden" name="todo_item_id" value="{{ MAIN_ITEM_ID }}" />
 			<input type="submit" value="-1 day" />
 		</form>
 		
@@ -21,14 +21,14 @@
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="delay" />
 			<input type="hidden" name="delay_by" value="+1 day" />
-			<input type="hidden" name="todo_item_id" value="{{ TODO_ITEM_ID }}" />
+			<input type="hidden" name="todo_item_id" value="{{ MAIN_ITEM_ID }}" />
 			<input type="submit" value="+1 day" />
 		</form>
 		
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="delay" />
 			<input type="hidden" name="delay_by" value="+1 week" />
-			<input type="hidden" name="todo_item_id" value="{{ TODO_ITEM_ID }}" />
+			<input type="hidden" name="todo_item_id" value="{{ MAIN_ITEM_ID }}" />
 			<input type="submit" value="+1 week" />
 		</form>
 		
@@ -37,7 +37,7 @@
 		
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="remove" />
-			<input type="hidden" name="todo_item_id" value="{{ TODO_ITEM_ID }}" />
+			<input type="hidden" name="todo_item_id" value="{{ MAIN_ITEM_ID }}" />
 			<input type="submit" value="Remove" />
 		</form>
 		
