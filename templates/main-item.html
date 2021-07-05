@@ -2,6 +2,12 @@
 	<details>
 		<summary>{{ MAIN_ITEM_SUMMARY }}</summary>
 		
+		<small><i>Created: {{ MAIN_ITEM_CREATED }}</i></small><br>
+		<small><i>Modified: {{ MAIN_ITEM_MODIFIED }}</i></small><br>
+		Deadline: {{ MAIN_ITEM_DEADLINE }}<br>
+		Category: {{ MAIN_ITEM_CATEGORY }}<br>
+		<br>
+		
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="delay" />
 			<input type="hidden" name="delay_by" value="-1 week" />
@@ -34,6 +40,10 @@
 		
 		<div style="display:inline-block;width:1em;"></div>
 		<div style="display:inline-block;width:1em;"></div>
+		
+		<form onsubmit="return false">
+			<input type="submit" value="Edit" onclick="editNote('{{ MAIN_ITEM_ID }}', '{{ MAIN_ITEM_TITLE }}', '{{ MAIN_ITEM_DESCRIPTION }}', '{{ MAIN_ITEM_DEADLINE }}', '{{ MAIN_ITEM_CATEGORY_RAW }}')" />
+		</form>
 		
 		<form action="./" method="POST">
 			<input type="hidden" name="action" value="remove" />

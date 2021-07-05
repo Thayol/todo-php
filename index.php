@@ -285,6 +285,12 @@ else if (!empty($_POST["action"]))
 			}
 			
 			$now = time();
+			$created = $now;
+			
+			if (!empty($id_to_edit) && !empty($model["list"][$id_to_edit]) && !empty($model["list"][$id_to_edit]["created"]))
+			{
+				$created = $model["list"][$id_to_edit]["created"];
+			}
 			
 			if (empty($model["list"]))
 			{
@@ -296,7 +302,7 @@ else if (!empty($_POST["action"]))
 				"description" => $description,
 				"deadline" => $deadline,
 				"category" => $category,
-				"created" => $now,
+				"created" => $created,
 				"modified" => $now,
 			);
 			
@@ -503,10 +509,44 @@ function todo_list(array $model = []) : string
 				$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_DESC");
 			}
 			
+			unset($deadline);
+			$deadline = date("Y-m-d", intval($item["deadline"]));
+			if (empty($deadline))
+			{
+				$deadline = "N/A";
+			}
+			
+			unset($created);
+			$created = date("Y-m-d", intval($item["created"]));
+			if (empty($created))
+			{
+				$created = "N/A";
+			}
+			
+			unset($modified);
+			$modified = date("Y-m-d", intval($item["modified"]));
+			if (empty($modified))
+			{
+				$modified = "N/A";
+			}
+			
+			unset($category);
+			$category = $item["category"];
+			$category_raw = $item["category"];
+			if (empty($category))
+			{
+				$category = "Uncategorized";
+			}
+			
 			$te->append_argumented_block("MAIN_CATEGORY_ITEMS", "MAIN_ITEM", [ 
 				"MAIN_ITEM_ID" => $key,
-				"MAIN_ITEM_TITLE" => $item["title"],
-				"MAIN_ITEM_DESCRIPTION" => $item["description"],
+				"MAIN_ITEM_TITLE" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $item["title"]),
+				"MAIN_ITEM_DESCRIPTION" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $item["description"]),
+				"MAIN_ITEM_CATEGORY" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $category),
+				"MAIN_ITEM_CATEGORY_RAW" => $category_raw,
+				"MAIN_ITEM_DEADLINE" => $deadline,
+				"MAIN_ITEM_CREATED" => $created,
+				"MAIN_ITEM_MODIFIED" => $modified,
 			]);
 		}
 		
