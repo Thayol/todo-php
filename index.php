@@ -510,7 +510,10 @@ function todo_list(array $model = []) : string
 	
 	foreach ($categories as $category_key => $category)
 	{
-		ksort($categories[$category_key]["list"]);
+		if (!empty($categories[$category_key]["list"]))
+		{
+			ksort($categories[$category_key]["list"]);
+		}
 	}
 	
 	$category_autofills = array_unique($category_autofills);
@@ -531,6 +534,11 @@ function todo_list(array $model = []) : string
 	$titles = array();
 	foreach ($categories as $category_key => $category)
 	{
+		if (empty($category["list"]))
+		{
+			continue;
+		}
+		
 		$te->set_block("MAIN_CATEGORY_ITEMS", "");
 		
 		foreach ($category["list"] as $date_key => $date)
