@@ -256,7 +256,7 @@ else if (!empty($_POST["action"]))
 	$modified = false;
 	if ($action === "add" || $action == "edit")
 	{
-		if (!empty($_POST["todo_item_id"]))
+		if (isset($_POST["todo_item_id"]))
 		{
 			$id_to_edit = $_POST["todo_item_id"];
 		}
@@ -287,7 +287,7 @@ else if (!empty($_POST["action"]))
 			$now = time();
 			$created = $now;
 			
-			if (!empty($id_to_edit) && !empty($model["list"][$id_to_edit]) && !empty($model["list"][$id_to_edit]["created"]))
+			if (isset($id_to_edit) && !empty($model["list"][$id_to_edit]) && !empty($model["list"][$id_to_edit]["created"]))
 			{
 				$created = $model["list"][$id_to_edit]["created"];
 			}
@@ -306,7 +306,7 @@ else if (!empty($_POST["action"]))
 				"modified" => $now,
 			);
 			
-			if (!empty($id_to_edit) && !empty($model["list"][$id_to_edit]))
+			if (isset($id_to_edit) && !empty($model["list"][$id_to_edit]))
 			{
 				$model["list"][$id_to_edit] = $new_item;
 			}
@@ -379,6 +379,54 @@ else
 }
 
 
+function get_fancy_date($date) : string
+{
+	$now = time();
+	$now_dayth = intval(date("z", $now));
+	
+	$ymd = date("y-m-d", $date);
+	$day = date("l", $date);
+	$dayth = intval(date("z", $date));
+	
+	$fancy_date = $ymd;
+	
+	if ($dayth - $now_dayth == 0)
+	{
+		$fancy_date = "Today ({$day})";
+	}
+	else if ($dayth - $now_dayth == 1)
+	{
+		$fancy_date = "Tomorrow ({$day})";
+	}
+	else if ($dayth - $now_dayth == -1)
+	{
+		$fancy_date = "Yesterday ({$day})";
+	}
+	else if ($dayth - $now_dayth < -7)
+	{
+		$fancy_date = "{$day} ({$ymd})";
+	}
+	else if ($dayth - $now_dayth < 0)
+	{
+		$fancy_date = "Last " . $day;
+	}
+	else if ($dayth - $now_dayth < 7)
+	{
+		$fancy_date = $day;
+	}
+	else if ($dayth - $now_dayth < 14)
+	{
+		$fancy_date = "Next " . $day;
+	}
+	else
+	{
+		$fancy_date = "{$day} ({$ymd})";
+	}
+	
+	return $fancy_date;
+}
+
+
 // renderers
 function todo_list(array $model = []) : string
 {
@@ -394,85 +442,65 @@ function todo_list(array $model = []) : string
 	$te->append_block_template("CONTENT", "ADD_FORM");
 	$te->append_block_template("CONTENT", "NAVBAR");
 	
-	$categories = array();
+	$categories = array( "uncategorized" => [] );
 
 	$now = time();
 	$now_dayth = intval(date("z", $now));
+	
+	$category_autofills = array();
 	
 	if (!empty($list))
 	{
 		foreach ($list as $key => $item)
 		{
+			$item["id"] = $key;
+			
+			$date = "Unscheduled";
+			if (!empty($item["deadline"]))
+			{
+				$date = get_fancy_date($item["deadline"]);
+				$date_int = $item["deadline"];
+			}
+			else
+			{
+				$date_int = "-1";
+			}
+			
 			if (!empty($item["category"]))
 			{
-				$category = strtolower($item["category"]);
 				$category_name = $item["category"];
-				$category_basis = "custom";
-			}
-			else if (!empty($item["deadline"]))
-			{
-				$deadline = $item["deadline"];
 				
-				$ymd = date("y-m-d", $deadline);
-				$day = date("l", $deadline);
-				$dayth = intval(date("z", $deadline));
-				
-				$category = $ymd;
-				if ($dayth - $now_dayth == 0)
-				{
-					$category_name = "Today ({$day})";
-				}
-				else if ($dayth - $now_dayth == 1)
-				{
-					$category_name = "Tomorrow ({$day})";
-				}
-				else if ($dayth - $now_dayth == -1)
-				{
-					$category_name = "Yesterday ({$day})";
-				}
-				else if ($dayth - $now_dayth < -7)
-				{
-					$category_name = "{$day} ({$ymd})";
-				}
-				else if ($dayth - $now_dayth < 0)
-				{
-					$category_name = "Last " . $day;
-				}
-				else if ($dayth - $now_dayth < 7)
-				{
-					$category_name = $day;
-				}
-				else if ($dayth - $now_dayth < 14)
-				{
-					$category_name = "Next " . $day;
-				}
-				else
-				{
-					$category_name = "{$day} ({$ymd})";
-				}
-				
-				$category_basis = "date";
+				$category_autofills[] = $item["category"];
 			}
 			else 
 			{
-				$category = "uncategorized";
 				$category_name = "Uncategorized";
-				$category_basis = "default";
 			}
+			
+			$category = strtolower($category_name);
+			$category = str_replace(" ", "-", $category);
+			$category = str_replace([ "\t", "\n", "\r", "\0", "\v" ], "--", $category);
 			
 			if (empty($categories[$category]))
 			{
 				$categories[$category] = array(
 					"title" => $category_name,
-					"basis" => $category_basis,
+					"id" => $category,
 					"list" => array(),
 				);
 			}
 			
-			$categories[$category]["list"][$key] = $item;
+			if (empty($categories[$category]["list"][$date_int]))
+			{
+				$categories[$category]["list"][$date_int] = array(
+					"title" => $date,
+					"id" => $date_int,
+					"list" => array(),
+				);
+			}
+			$categories[$category]["list"][$date_int]["list"][$key] = $item;
 		}
 	}
-	
 	
 	if (!empty($categories))
 	{
@@ -480,79 +508,95 @@ function todo_list(array $model = []) : string
 	}
 	$te->set_block("DATALIST_AUTOFILLS", "");
 	
-	ksort($categories);
+	foreach ($categories as $category_key => $category)
+	{
+		ksort($categories[$category_key]["list"]);
+	}
+	
+	$category_autofills = array_unique($category_autofills);
+	foreach ($category_autofills as $autofill)
+	{
+		$te->append_argumented_block("DATALIST_AUTOFILLS", "DATALIST_AUTOFILL", [
+			"DATALIST_AUTOFILL_DATA" => $autofill,
+		]);
+	}
+	
+	if (!empty($json_requested) || isset($_GET["json"]))
+	{
+		header("Content-Type: application/json");
+		echo json_encode($categories);
+		exit(0);
+	}
 	
 	$titles = array();
 	foreach ($categories as $category_key => $category)
 	{
-		$category_name = $category["title"];
-		$category_basis = $category["basis"];
 		$te->set_block("MAIN_CATEGORY_ITEMS", "");
 		
-		if ($category_basis == "custom")
+		foreach ($category["list"] as $date_key => $date)
 		{
-			$te->append_argumented_block("DATALIST_AUTOFILLS", "DATALIST_AUTOFILL", [
-				"DATALIST_AUTOFILL_DATA" => $category_name,
-			]);
-		}
-		
-		foreach ($category["list"] as $key => $item)
-		{
-			$titles[] = $item["title"];
+			$te->set_block("MAIN_DATE_ITEMS", "");
 			
-			if (empty($item["description"]))
+			foreach ($date["list"] as $key => $item)
 			{
-				$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_NODESC");
-			}
-			else
-			{
-				$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_DESC");
-			}
-			
-			unset($deadline);
-			$deadline = date("Y-m-d", intval($item["deadline"]));
-			if (empty($deadline))
-			{
+				$titles[] = $item["title"];
+				
 				$deadline = "N/A";
-			}
-			
-			unset($created);
-			$created = date("Y-m-d", intval($item["created"]));
-			if (empty($created))
-			{
 				$created = "N/A";
-			}
-			
-			unset($modified);
-			$modified = date("Y-m-d", intval($item["modified"]));
-			if (empty($modified))
-			{
 				$modified = "N/A";
+				$displayed_category = "Uncategorized";
+				$category_raw = $item["category"];
+				
+				if (empty($item["description"]))
+				{
+					$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_NODESC");
+				}
+				else
+				{
+					$te->set_block_template("MAIN_ITEM_SUMMARY", "MAIN_ITEM_SUMMARY_DESC");
+				}
+				
+				if (isset($item["deadline"]))
+				{
+					$deadline = date("Y-m-d", intval($item["deadline"]));
+				}
+				
+				if (isset($item["created"]))
+				{
+					$created = date("Y-m-d", intval($item["created"]));
+				}
+				
+				if (isset($item["modified"]))
+				{
+					$modified = date("Y-m-d", intval($item["modified"]));
+				}
+				
+				if (!empty($item["category"]))
+				{
+					$displayed_category = $item["category"];
+				}
+				
+				$te->append_argumented_block("MAIN_DATE_ITEMS", "MAIN_ITEM", [ 
+					"MAIN_ITEM_ID" => $key,
+					"MAIN_ITEM_TITLE" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $item["title"]),
+					"MAIN_ITEM_DESCRIPTION" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $item["description"]),
+					"MAIN_ITEM_CATEGORY" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $displayed_category),
+					"MAIN_ITEM_CATEGORY_RAW" => $category_raw,
+					"MAIN_ITEM_DEADLINE" => $deadline,
+					"MAIN_ITEM_CREATED" => $created,
+					"MAIN_ITEM_MODIFIED" => $modified,
+				]);
 			}
 			
-			unset($category);
-			$category = $item["category"];
-			$category_raw = $item["category"];
-			if (empty($category))
-			{
-				$category = "Uncategorized";
-			}
-			
-			$te->append_argumented_block("MAIN_CATEGORY_ITEMS", "MAIN_ITEM", [ 
-				"MAIN_ITEM_ID" => $key,
-				"MAIN_ITEM_TITLE" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $item["title"]),
-				"MAIN_ITEM_DESCRIPTION" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $item["description"]),
-				"MAIN_ITEM_CATEGORY" => str_replace([ "\"", "'" ], [ "&quot;", "&apos;" ], $category),
-				"MAIN_ITEM_CATEGORY_RAW" => $category_raw,
-				"MAIN_ITEM_DEADLINE" => $deadline,
-				"MAIN_ITEM_CREATED" => $created,
-				"MAIN_ITEM_MODIFIED" => $modified,
-			]);
+			$te->append_argumented_block("MAIN_CATEGORY_ITEMS", "MAIN_DATE", [
+			"MAIN_DATE_ID" => $date_key,
+			"MAIN_DATE_TITLE" => $date["title"],
+		]);
 		}
 		
 		$te->append_argumented_block("MAIN_ITEMS", "MAIN_CATEGORY", [
 			"MAIN_CATEGORY_ID" => $category_key,
-			"MAIN_CATEGORY_TITLE" => $category_name,
+			"MAIN_CATEGORY_TITLE" => $category["title"],
 		]);
 	}
 	$te->append_argumented_block("DATALISTS", "DATALIST", [
