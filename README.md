@@ -1,13 +1,11 @@
 # To-Do List PHP
 
 A to-do list app that uses **unencrypted** files to store data. Not safe for anything else than self-hosted personal use. 
-
 It requires no external libraries and can run off of PHP's built-in server if needed. 
-
 
 Pull requests are welcome.
 
-
+## Description
 
 This is a to-do list that supports deadlines. 
 It is a great way of organizing your thoughts and plans. 
@@ -26,7 +24,6 @@ it features categorization so that certain events can be viewed as distinct note
 
 Editing notes is possible, but just like the "snooze" button on alarms, there are quick-access buttons for delaying reminders by a day or a week. 
 
-
 ## Features
 
 - Users
@@ -35,7 +32,6 @@ Editing notes is possible, but just like the "snooze" button on alarms, there ar
 - Note editing
 - Quick delaying without manually editing
 - Friendly dates (Tomorrow, Yesterday, Next Tuesday, etc.)
-
 
 ## Requirements
 
