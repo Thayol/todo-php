@@ -1,4 +1,12 @@
 <div class="todo-category" id="todo-category-{{ MAIN_CATEGORY_ID }}">
-	<h3>{{ MAIN_CATEGORY_TITLE }}</h3>
+	<h3>
+		{{ MAIN_CATEGORY_TITLE }}
+		
+		<form style="float: right;" class="{{ MAIN_CATEGORY_EXTRA_PIN_BUTTON_CLASS }}" action="./" method="POST">
+			<input type="hidden" name="action" value="pin" />
+			<input type="hidden" name="category_name" value="{{ MAIN_CATEGORY_ID }}" />
+			<input type="submit" value="{{ MAIN_CATEGORY_PIN_OR_UNPIN }}" class="todo-button" />
+		</form>
+	</h3>
 	{{ MAIN_CATEGORY_ITEMS }}
 </div>

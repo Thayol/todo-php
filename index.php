@@ -352,6 +352,31 @@ else if (!empty($_POST["action"]))
 			}
 		}
 	}
+	else if ($action === "pin" && !empty($_POST["category_name"]))
+	{
+		if (empty($model["pinned"]))
+		{
+			$model["pinned"] = array();
+		}
+		
+		$category_name = $_POST["category_name"];
+		if (in_array($category_name, $model["pinned"]))
+		{
+			foreach ($model["pinned"] as $pin_key => $pin_name)
+			{
+				if ($pin_name == $category_name)
+				{
+					unset($model["pinned"][$pin_key]);
+				}
+			}
+		}
+		else
+		{
+			$model["pinned"][] = $category_name;
+		}
+		
+		$modified = true;
+	}
 	
 	if ($modified)
 	{
@@ -442,7 +467,16 @@ function todo_list(array $model = []) : string
 	$te->append_block_template("CONTENT", "ADD_FORM");
 	$te->append_block_template("CONTENT", "NAVBAR");
 	
-	$categories = array( "uncategorized" => [] );
+	$pinned_categories = array();
+	if (!empty($model["pinned"]))
+	{
+		$pinned_categories = array_merge($model["pinned"]);
+	}
+	
+	$default_category = "Uncategorized";
+	$default_category_id = "uncategorized";
+	
+	$categories = array( $default_category_id => [] );
 
 	$now = time();
 	$now_dayth = intval(date("z", $now));
@@ -474,12 +508,18 @@ function todo_list(array $model = []) : string
 			}
 			else 
 			{
-				$category_name = "Uncategorized";
+				$category_name = $default_category;
 			}
 			
 			$category = strtolower($category_name);
 			$category = str_replace(" ", "-", $category);
 			$category = str_replace([ "\t", "\n", "\r", "\0", "\v" ], "--", $category);
+			
+			$is_pinned = false;
+			if (in_array($category, $pinned_categories))
+			{
+				$is_pinned = true;
+			}
 			
 			if (empty($categories[$category]))
 			{
@@ -487,6 +527,7 @@ function todo_list(array $model = []) : string
 					"title" => $category_name,
 					"id" => $category,
 					"list" => array(),
+					"pinned" => $is_pinned,
 				);
 			}
 			
@@ -515,6 +556,35 @@ function todo_list(array $model = []) : string
 			ksort($categories[$category_key]["list"]);
 		}
 	}
+	
+	uasort($categories, function($a, $b)
+	{
+		global $pinned_categories;
+		
+		$is_a_pinned = $a["pinned"];
+		$is_b_pinned = $b["pinned"];
+		
+		if ($is_a_pinned && $is_b_pinned)
+		{
+			return 0;
+		}
+		else if ($a["id"] == "uncategorized")
+		{
+			if ($is_b_pinned)
+			{
+				return 1;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else if ($is_a_pinned)
+		{
+			return -1;
+		}
+		return 1;
+	});
 	
 	$category_autofills = array_unique($category_autofills);
 	foreach ($category_autofills as $autofill)
@@ -605,6 +675,8 @@ function todo_list(array $model = []) : string
 		$te->append_argumented_block("MAIN_ITEMS", "MAIN_CATEGORY", [
 			"MAIN_CATEGORY_ID" => $category_key,
 			"MAIN_CATEGORY_TITLE" => $category["title"],
+			"MAIN_CATEGORY_PIN_OR_UNPIN" => $category["pinned"] ? "Unpin" : "Pin",
+			"MAIN_CATEGORY_EXTRA_PIN_BUTTON_CLASS" => $category["id"] == $default_category_id ? "hidden" : "",
 		]);
 	}
 	$te->append_argumented_block("DATALISTS", "DATALIST", [
