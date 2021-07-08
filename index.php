@@ -404,6 +404,7 @@ else
 }
 
 
+// functions used by renderers
 function get_fancy_date($date) : string
 {
 	$now = time();
