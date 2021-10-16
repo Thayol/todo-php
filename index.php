@@ -562,14 +562,15 @@ function todo_list(array $model = []) : string
 	{
 		global $pinned_categories;
 		
-		$is_a_pinned = $a["pinned"];
-		$is_b_pinned = $b["pinned"];
+		$is_a_pinned = isset($a["pinned"]) ? $a["pinned"] : false;
+		$is_b_pinned = isset($b["pinned"]) ? $b["pinned"] : false;
+		$a_id = isset($a["id"]) ? $a["id"] : 1;
 		
 		if ($is_a_pinned && $is_b_pinned)
 		{
 			return 0;
 		}
-		else if ($a["id"] == "uncategorized")
+		else if ($a_id == "uncategorized")
 		{
 			if ($is_b_pinned)
 			{
